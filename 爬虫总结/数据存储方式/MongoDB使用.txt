@@ -1,0 +1,62 @@
+MongoDB是一个非关系型数据库，使用非常灵活
+其内容存储形式类似JSON对象
+----------------------------------------------------------------------------------------
+安装MongoDB：
+	下方链接可进行下载：
+		1：http://downloads.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-v4.0-latest-signed.msi
+	安装过程一路next，最后重启一次电脑即可完成
+	
+----------------------------------------------------------------------------------------
+				Python使用MongoDB
+----------------------------------------------------------------------------------------
+下载pymongo：
+	pip install pymongo
+
+使用方法：
+	import pymongo
+	#  获得数据库连接
+	conn = pymongo.MongoClient(host="localhost",port=27017);
+	或者：
+	conn = pymongo.MongoClient("mongodb://loaclhost:27017/");
+	
+	#  指定要使用过的数据库
+	db = conn.数据库名;
+	或者：
+	db = conn["数据库名"];
+	
+	#  指定要操作的集合（与表格相似）	
+	collection = db.集合名;
+	或者：
+	collection = db["集合名"];
+
+	# 插入数据
+	data = {json格式的数据}
+	res = collection.insert_one(data);  # 插入一条数据
+
+	res = collection.insert_many([data1,data2....]); # 插入多条数据
+
+	print(res); # 数据的id或一个包含多个id的列表
+
+	# 查询数据
+	res = collection.find_one({"字段":"数据"}); # 查询一条数据
+	
+	res = collection.find(); # 查询所有数据
+	或者
+	res = collectuon.find({"字段":{"&lt/$gt/...":约束条件}}); # 根据指定条件查询数据
+	
+	lt：小于。gt：大于。lte：小于等于。get：大于等于。ne：不等于
+
+	# 更新数据
+		# 参数1：相当于where后的约束条件。参数2：修改后的数据
+	res = collection.update_one({约束条件},{"$set":{修改后的数据}); # 更新一条数据
+	
+	res = collection.update_many(....); # 更新多条数据。参数与上方一样
+ 	
+	# 删除数据
+	res = collection.delete_one({约束条件}); # 删除一条数据
+	
+	res = collection.delete_many({约束条件}); # 删除多条数据
+
+	
+
+	

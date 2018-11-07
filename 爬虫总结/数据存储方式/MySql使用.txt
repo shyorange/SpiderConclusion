@@ -1,0 +1,120 @@
+首先安装MySql：
+	下载地址：https://cdn.mysql.com//Downloads/MySQL-8.0/mysql-8.0.11-winx64.zip
+
+	这个版本的MySql不用安装，但配置过程较为麻烦，详情可看教程。
+
+	（配置过程中最好使用 cmd命令行工具，不要使用 Powershell ）
+
+	附上三个安装教程链接：
+		1：http://www.runoob.com/mysql/mysql-install.html
+		2：https://blog.csdn.net/mmhh3000/article/details/51120280
+		3：https://blog.csdn.net/weixin_40396510/article/details/79277731
+
+	若用Navicat连接MySql报 2059 错误，请看下方教程：
+		1：https://blog.csdn.net/qq_40159861/article/details/80084827
+		2：https://blog.csdn.net/cheneykke/article/details/80272777
+
+----------------------------------------------------------------------------------------
+				Python使用MySql
+	
+下载pymy	sql：
+	pip install pymysql
+----------------------------------------------------------------------------------------
+使用方法：
+	# 获得数据库连接和操作数据库的游标
+	conn = pymysql.connect(host="IP地址",port=端口号,user="用户名",password="密码",db="数据库名");	
+	cursor = conn.cursor();
+
+	# 简单查看一些MySql的信息
+	cursor.execute("select version()");  # 返回数据库版本
+	...
+	
+	# 创建一个数据库
+	c_d_sql= "create database if not exist 数据库名 相关配置";
+	cursor.execute(c_d_sql);
+	
+	# 创建表格
+	c_t_sql = "create table if not exist 表名 (字段 类型 是否为空...primary key (某字段))"; 
+	cursor.execute(c_t_sql);
+	
+	# 插入数据
+	insert_sql = "insert into 表名(字段...) values(值...)";
+	cursor.execute(insert_sql);
+
+	# 删除数据
+	del_sql = "delete from 表名 where 约束条件";
+	cursor.execute(del_sql);
+
+	# 更新数据
+	up_sql = "update 表名 set 字段 = 新值 where 约束条件";
+	cursor.execute(up_sql);
+
+	# 查询数据
+	sel_sql = "select 字段/* from 表名 where 约束条件";
+	cursor.execute(sel_sql);		
+	
+	# 最后提交所有操作，并关闭连接
+	conn.commit();
+	cursor.close();
+	conn.close();
+----------------------------------------------------------------------------------------
+最好为以上操作都添加一层错误捕获
+每一次操作都是一次事务。
+事务有 4个 属性：
+	原子性：事务必须是不可分割的（事务中的所有操作要么都做，要么都不做）
+	一致性：事务必须从一个一致性到另一个一致性，该属性与原子性密不可分
+	隔离性：一个事务的操作不能被其他事务干扰
+	持久性：一个事务一旦提交，其对数据的改变应该是永久性的
+
+为保证一个完整的事务成功执行，所以要对所有操作增加错误捕获。
+在 except 部分中增加如下代码：
+	conn.rollback();# 事务回滚（取消当前事务已经做出的改变。即，什么都没发生）
+----------------------------------------------------------------------------------------
+常用方法（该方法常用于提交操作后的查询）：
+	
+	cursor.fetchone(); # 获取一条结果
+
+	cursor.fetchall(); # 获取所有操作
+
+------------------------------------------------------------------------------------------
+异步写入数据库：
+	在使用Scrapy爬取数据时，由于scrapy爬取的速度非常快，但写入数据库的步骤去非常慢，这是就需要使用异步写入数据库了。
+
+使用方法：
+	首先需要下载Twisted模块，该模块使用 pip 不一定能下载成功，若下载失败可使用下方连接进行下载，然后手动安装：
+	
+	下载地址：http://mirrors.aliyun.com/pypi/simple/twisted/	
+
+	pip install Twisted文件的路径	
+
+------------------------------------------------------------------------------------------
+	from twisted.enterprise import adbapi; # 该模块使用来异步操作数据库的
+	from pymysql.cursors import DictCursor; # 该模块是一个游标类，该游标直接用来操作数据库，不用再自己获取游标
+	
+	#  连接数据库所需的各项配置
+	db_settings = {host, port, user, password, db....,"cursor":DictCursor}; # 最后一个一定要写，它指定了操作数据库所使用的游标。
+	
+	# 生成一个数据库连接池
+	db_pool = adbapi.ConnectionPool("mysql",**db_settings);
+
+以上步骤可以在 __init__() 方法中完成。
+以下步骤可以在 process_item()方法中完成。
+	
+	# 开始插入数据
+	res = db_pool.runInteraction(插入数据的方法, 要插入的数据); # 插入数据的方法中必须要有两个参数：
+	1：游标：执行插入数据操作需要用到，runInteraction() 方法会自动传入上方定义的游标。
+	2：数据：要写入数据库的数据
+	
+	#  当插入数据出现错误时，执行该语句
+	res.addErrback(处理错误的方法, 发生错误的数据); 
+
+	# 处理错误的方法中必须要有两个参数：
+		1：错误的原因：由 addErrback() 自动传入
+		2：数据：发生错误的数据
+	
+	
+	
+
+	
+	
+	

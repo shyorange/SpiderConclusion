@@ -1,0 +1,85 @@
+BeautifulSoup是一个外部的HTML解析包
+-----------------------------------------------------------------------------------
+安装方式：
+	pip install lxml  ---一个BeautifulSoup所依赖的解析包，在BeautifulSoup中会使用到。
+	pip install beautifulsoup4   
+-----------------------------------------------------------------------------------
+使用方法：
+	from bs4 import BeautifulSoup as BSoup
+	soup = BSoup(response.text,"lxml");  # response.text：网页的内容
+	print(soup.prettify());  # prettify()：返回一个标准格式的网页内容
+-----------------------------------------------------------------------------------
+选择节点：
+	soup.节点名;
+
+	例如：soup.title，soup.p,soup.span,......
+
+	还可嵌套选择节点：soup.节点名.节点名......
+
+获得节点包含的内容：
+	soup.节点名.string;
+
+	例如："<p>你好</p>" print(soup.p.string); 输出：你好
+
+获得节点属性值：
+
+	soup.节点名.attrs["属性名"]; 或者 soup.节点名["属性名"];
+
+	例如：soup.p.attrs["id"]; #  返回 p 节点的 id 属性值
+
+	soup.节点名.attrs;  # 返回该节点的所有属性
+
+-----------------------------------------------------------------------------------
+关联选择：
+	选择所有直接子节点:
+		soup.节点名.contents; # 返回的是一个包含该接节点所有直接子节点（列表形式）
+		
+		soup.节点名.children; # 也是返回所有直接子节点（生成器形式）
+	
+	选择所有子孙节点：
+		soup.节点名.descendants; # 返回所有子孙节点（生成器形式）
+	
+	选择直接父节点：
+		soup.节点名.parent; # 返回该节点的直接父节点
+
+	选择所有祖先节点：
+		soup.节点名.parents; # 返回该节点所有祖先节点（生成器形式）
+
+	选择兄弟节点：
+		soup.节点名.next_sibling; # 返回该节点下一个兄弟节点
+		
+		soup.节点名.previous_sibling; # 返回该节点的上一个兄弟节点
+
+		soup.节点名.next_siblings; # 返回该节点后面所有兄弟节点（生成器形式）		
+			
+		soup.节点名.previous_siblings; # 返回该节点前面所有兄弟节点（生成器形式）
+-----------------------------------------------------------------------------------
+方法选择器：
+	find_all(name, attrs, recursive, text, **kwargs):返回符合条件的所有节点（列表形式）
+		name：根据传入的节点名称	（返回所有节点名为name的节点）
+		attrs：根据传入的节点属性 (例如：id="first")（返回所有符合该属性的节点）
+		text：根据传入的文本  （返回所有文本内容为text的节点）
+	
+	find(): 用法与find_all()一样。不过，返回的是第一个符合条件的节点
+
+	find_parent(); 		    find_parent(); 
+	find_next_siblings(); 	    find_next_sibling()
+	find_previous_siblings();   find_previous_sibling();
+	find_all_next();            find_next();
+	find_all_previous();        find_previous();
+		用法都一样
+-----------------------------------------------------------------------------------
+CSS选择器（BeautifulSoup提供了CSS选择器）:
+	res = soup.select("css选择语句"); # 返回的是包含所需节点的列表
+
+	
+
+
+
+
+
+
+	
+	
+
+  

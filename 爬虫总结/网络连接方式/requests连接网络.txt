@@ -1,0 +1,49 @@
+requests是一个基于urllib封装的一个网络请求包
+下载方式：
+	pip install requests
+支持任何类型的请求：
+	requests.get();  
+	requests.post();
+	requests.put();
+	requests.head();
+	requests.delete();
+	requests.options();
+发送get请求：
+	res = requests.get(
+		  url="https://.......",
+		  headers = {
+		      "Uesr-Agent" : "....",
+			.....	
+		   }，
+		  proxies = {"使用的ip代理"}
+		);
+	print(res.text);   输出网页内容
+	print(res.cookies);  输出网页携带的cookies
+		...
+		...	
+		...
+发送post请求：
+	res = requests.post(
+		   url = "https://......",
+		   headers = {
+    			"User-Agent" : ".....".
+				.....
+		      }，
+		   proxies = {"使用的ip代理"}
+		);
+若确定网页返回的是json格式的字符串：
+	res_json = response.json();
+	print(res_json); 
+	
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,43 @@
+urllib是Python内置包，无需下载
+导入：
+    import urllib
+发送请求：
+    resp = urllib.request.urlopen("http://www.baidu.com");
+输出返回的网页源码：read()：返回字节类型的数据
+    content = resp.read().decode("utf-8");
+    print(content);
+发送post请求：
+	1：准备发送请求的参数：
+		data = {
+		   "键" : "值"，
+		   "键" : "值"
+		}
+	2：对请求进行编码，转换为byte类型的数据
+		post_data = urllib.parse.urlencode(data).encode("utf-8");
+	3：当网站对做了一定防爬虫措施时需要更改请求头
+		headers = {
+		    "User-Agent" : ".......",
+		    "Cookies" : "......."
+		}
+	4：创建一个Request对象，传入请求地址和各参数
+		req = urllib.request.Request("https://...",data = post_data, headers = headers);
+	5：发送请求
+		res = urllib.request.urlopen(req);
+	6：查看返回的信息
+		print(req.text);
+------------------------------------------------------------------------------------------
+使用代理ip：
+	例 ：   prox = {"协议" : "ip地址:端口号"}
+		
+		#  获得一个处理代理的对象
+		proxy_handle = urllib.request.ProxyHandle(prox);
+		
+		#  根据代理对象获得一个开启IP的对象
+		opener = urllib.request.build_opener(proxy_handle); 
+
+		#  将使用的代理装进 urllib.request 中
+		urllib.request.install_opener(opener);
+	
+		#  使用代理ip访问网络
+		res = urllib.request.urlopen("网址");
+   
